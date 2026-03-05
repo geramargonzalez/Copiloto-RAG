@@ -9,7 +9,10 @@ export const observabilityPlugin = fp(async (app) => {
 
   app.addHook('onResponse', async (request, reply) => {
     const startedAt = (request as { __startedAt?: number }).__startedAt ?? Date.now();
-    const endpoint = request.routerPath ?? request.url.split('?')[0] ?? 'unknown';
+    const endpoint =
+      (request as { routeOptions?: { url?: string } }).routeOptions?.url ??
+      request.url.split('?')[0] ??
+      'unknown';
     const estimatedCostUsd = Number(reply.getHeader('x-estimated-cost-usd') ?? 0);
     const citationsCount = Number(reply.getHeader('x-citations-count') ?? 0);
 
@@ -22,4 +25,3 @@ export const observabilityPlugin = fp(async (app) => {
     });
   });
 });
-

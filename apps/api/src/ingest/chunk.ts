@@ -55,12 +55,13 @@ const splitOversizedChunk = (
     }));
   }
 
-  if (chunks.length === 1 && chunks[0].tokenCount < targetMin) {
+  const firstChunk = chunks[0];
+  if (chunks.length === 1 && firstChunk && firstChunk.tokenCount < targetMin) {
     return [
       {
         heading,
-        content,
-        tokenCount: estimateTokens(content),
+        content: firstChunk.content,
+        tokenCount: estimateTokens(firstChunk.content),
       },
     ];
   }
@@ -80,7 +81,7 @@ export const chunkByHeadings = (inputText: string, targetMin = 300, targetMax = 
       if (currentBody.length > 0) {
         sections.push({ heading: currentHeading, body: currentBody });
       }
-      currentHeading = headingMatch[2].trim();
+      currentHeading = (headingMatch[2] ?? 'General').trim();
       currentBody = [];
       continue;
     }
@@ -110,6 +111,48 @@ export const chunkByHeadings = (inputText: string, targetMin = 300, targetMax = 
     }
   }
 
-  return chunks.filter((chunk) => chunk.content.length > 30);
-};
+  const filtered = chunks.filter((chunk) => chunk.content.length > 30);
+  const merged: SectionChunk[] = [];
+  let buffer: SectionChunk | null = null;
 
+  for (const chunk of filtered) {
+    if (!buffer) {
+      buffer = { ...chunk };
+      continue;
+    }
+
+    if (buffer.tokenCount < targetMin) {
+      buffer = {
+        heading: `${buffer.heading} + ${chunk.heading}`,
+        content: `${buffer.content} ${chunk.content}`.trim(),
+        tokenCount: buffer.tokenCount + chunk.tokenCount,
+      };
+
+      if (buffer.tokenCount <= targetMax) {
+        continue;
+      }
+    }
+
+    merged.push(buffer);
+    buffer = { ...chunk };
+  }
+
+  if (buffer) {
+    if (buffer.tokenCount < targetMin && merged.length > 0) {
+      const previous = merged[merged.length - 1];
+      if (previous) {
+        merged[merged.length - 1] = {
+          heading: `${previous.heading} + ${buffer.heading}`,
+          content: `${previous.content} ${buffer.content}`.trim(),
+          tokenCount: previous.tokenCount + buffer.tokenCount,
+        };
+      } else {
+        merged.push(buffer);
+      }
+    } else {
+      merged.push(buffer);
+    }
+  }
+
+  return merged;
+};

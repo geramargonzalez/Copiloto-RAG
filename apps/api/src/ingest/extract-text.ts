@@ -80,7 +80,6 @@ const stripMarkdown = (content: string): string =>
     .replace(/`([^`]+)`/g, '$1')
     .replace(/!\[[^\]]*]\([^)]+\)/g, ' ')
     .replace(/\[([^\]]+)]\([^)]+\)/g, '$1')
-    .replace(/^#+\s+/gm, '')
     .replace(/[*_>-]/g, ' ')
     .replace(/\n{2,}/g, '\n')
     .trim();
@@ -104,7 +103,8 @@ const extractFromHtml = async (filePath: string): Promise<ParsedDocument> => {
   const raw = await fs.readFile(filePath, 'utf-8');
   const { frontmatter, markdownBody } = parseFrontmatter(raw);
   const $ = cheerio.load(markdownBody);
-  const title = frontmatter.title ?? $('title').text().trim() || path.basename(filePath, path.extname(filePath));
+  const fallbackTitle = $('title').text().trim() || path.basename(filePath, path.extname(filePath));
+  const title = frontmatter.title ?? fallbackTitle;
   const text = $('body').text().replace(/\s+/g, ' ').trim();
 
   return {
@@ -145,4 +145,3 @@ export const extractDocument = async (filePath: string): Promise<ParsedDocument>
 
   throw new Error(`Unsupported extension for ingestion: ${extension}`);
 };
-

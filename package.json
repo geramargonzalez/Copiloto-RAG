@@ -4,25 +4,29 @@
   "version": "0.1.0",
   "packageManager": "pnpm@10.6.0",
   "scripts": {
-    "dev": "turbo run dev --parallel",
-    "build": "turbo run build",
-    "typecheck": "turbo run typecheck",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "ingest": "pnpm --filter @copiloto/api ingest",
-    "db:migrate": "pnpm --filter @copiloto/api db:migrate",
-    "db:generate": "pnpm --filter @copiloto/api db:generate",
-    "eval": "pnpm --filter @copiloto/api eval:run"
+    "dev": "corepack pnpm -r --parallel --filter @copiloto/api --filter @copiloto/web dev",
+    "dev:turbo": "turbo run dev --parallel",
+    "build": "corepack pnpm -r --filter @copiloto/shared --filter @copiloto/api --filter @copiloto/web build",
+    "build:turbo": "turbo run build",
+    "typecheck": "corepack pnpm -r --filter @copiloto/shared --filter @copiloto/api --filter @copiloto/web typecheck",
+    "typecheck:turbo": "turbo run typecheck",
+    "lint": "corepack pnpm -r --filter @copiloto/shared --filter @copiloto/api --filter @copiloto/web lint",
+    "lint:turbo": "turbo run lint",
+    "test": "corepack pnpm -r --filter @copiloto/shared --filter @copiloto/api --filter @copiloto/web test",
+    "test:turbo": "turbo run test",
+    "ingest": "corepack pnpm --filter @copiloto/api ingest",
+    "db:migrate": "corepack pnpm --filter @copiloto/api db:migrate",
+    "db:generate": "corepack pnpm --filter @copiloto/api db:generate",
+    "eval": "corepack pnpm --filter @copiloto/api eval:run"
   },
   "devDependencies": {
     "@types/node": "^22.13.4",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.22.0",
-    "eslint": "^9.19.0",
+    "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.0.1",
     "prettier": "^3.5.3",
     "turbo": "^2.4.4",
     "typescript": "^5.7.3"
   }
 }
-

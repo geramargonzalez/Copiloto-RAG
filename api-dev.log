@@ -1,0 +1,15 @@
+{"level":30,"time":1772740090346,"msg":"Server listening at http://127.0.0.1:4000"}
+{"level":30,"time":1772740090346,"msg":"Server listening at http://169.254.210.60:4000"}
+{"level":30,"time":1772740090346,"msg":"Server listening at http://192.168.0.130:4000"}
+{"level":30,"time":1772740090346,"port":4000,"msg":"API server running"}
+{"level":30,"time":1772740105588,"reqId":"req-1","req":{"method":"GET","url":"/health","host":"localhost:4000","remoteAddress":"127.0.0.1","remotePort":50470},"msg":"incoming request"}
+{"level":30,"time":1772740105595,"reqId":"req-1","res":{"statusCode":200},"responseTime":5.119000002741814,"msg":"request completed"}
+{"level":30,"time":1772740233733,"reqId":"req-2","req":{"method":"GET","url":"/health","host":"localhost:4000","remoteAddress":"127.0.0.1","remotePort":55254},"msg":"incoming request"}
+{"level":30,"time":1772740233734,"reqId":"req-2","res":{"statusCode":200},"responseTime":0.6322000026702881,"msg":"request completed"}
+{"level":30,"time":1772740240622,"reqId":"req-3","req":{"method":"POST","url":"/chat","host":"localhost:4000","remoteAddress":"127.0.0.1","remotePort":55238},"msg":"incoming request"}
+{"level":50,"time":1772740240626,"err":"Body is not valid JSON but content-type is set to 'application/json'","stack":"FastifyError: Body is not valid JSON but content-type is set to 'application/json'\n    at Parser.defaultJsonParser [as fn] (C:\\Users\\Gerardo\\OneDrive - Oracle Corporation\\Documents\\GitHub\\Copiloto-RAG\\node_modules\\.pnpm\\fastify@5.8.1\\node_modules\\fastify\\lib\\content-type-parser.js:319:12)\n    at IncomingMessage.onEnd (C:\\Users\\Gerardo\\OneDrive - Oracle Corporation\\Documents\\GitHub\\Copiloto-RAG\\node_modules\\.pnpm\\fastify@5.8.1\\node_modules\\fastify\\lib\\content-type-parser.js:299:27)\n    at IncomingMessage.emit (node:events:508:28)\n    at endReadableNT (node:internal/streams/readable:1701:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)","path":"/chat","msg":"Unhandled error"}
+{"level":30,"time":1772740240627,"reqId":"req-3","res":{"statusCode":500},"responseTime":4.595799997448921,"msg":"request completed"}
+{"level":30,"time":1772740257270,"reqId":"req-4","req":{"method":"POST","url":"/chat","host":"localhost:4000","remoteAddress":"127.0.0.1","remotePort":62332},"msg":"incoming request"}
+{"level":50,"time":1772740257291,"err":"","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","path":"/chat","msg":"Unhandled error"}
+{"level":30,"time":1772740257291,"reqId":"req-4","res":{"statusCode":500},"responseTime":21.249600008130074,"msg":"request completed"}
+^C

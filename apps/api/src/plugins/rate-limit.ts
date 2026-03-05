@@ -13,6 +13,11 @@ const keyFor = (userId: string, ip: string): string => `${userId}:${ip}`;
 
 export const rateLimitPlugin = fp(async (app) => {
   app.addHook('preHandler', async (request, reply) => {
+    const requestPath = request.url.split('?')[0];
+    if (requestPath === '/health' || requestPath === '/metrics') {
+      return;
+    }
+
     const key = keyFor(request.auth?.userId ?? 'unknown', request.ip);
     const now = Date.now();
     const windowMs = env.RATE_LIMIT_WINDOW_MS;
@@ -26,11 +31,10 @@ export const rateLimitPlugin = fp(async (app) => {
 
     existing.count += 1;
     if (existing.count > maxRequests) {
-      reply.status(429).send({
+      return reply.status(429).send({
         error: 'Rate limit exceeded',
         retryAfterMs: existing.resetAt - now,
       });
     }
   });
 });
-

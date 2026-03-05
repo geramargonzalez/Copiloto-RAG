@@ -5,7 +5,7 @@ import { env } from './config/env.js';
 
 export const logger = pino({
   level: env.NODE_ENV === 'development' ? 'debug' : 'info',
-  base: undefined,
+  base: null,
   redact: {
     paths: ['req.headers.authorization', 'headers.authorization'],
     remove: true,
@@ -29,4 +29,3 @@ export const safeLogValue = (value: unknown): unknown => {
 
   return value;
 };
-

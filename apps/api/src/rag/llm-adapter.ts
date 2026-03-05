@@ -37,6 +37,48 @@ const authHeaders = (): Record<string, string> => ({
   'Content-Type': 'application/json',
 });
 
+const vectorDimensions = 1536;
+const isMockMode = (baseUrl: string): boolean =>
+  baseUrl.startsWith('mock://') || env.LLM_API_KEY.toLowerCase() === 'mock';
+
+const pseudoRandom = (seed: number): number => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
+
+const mockEmbedding = (text: string): number[] => {
+  const seedBase = text
+    .split('')
+    .reduce((acc, char, index) => acc + char.charCodeAt(0) * (index + 1), 0);
+  return Array.from({ length: vectorDimensions }, (_, index) =>
+    Number(((pseudoRandom(seedBase + index) * 2 - 1) * 0.2).toFixed(6)),
+  );
+};
+
+const mockClassification = (content: string): string => {
+  if (/\b(estado|status|ORD-|INV-|CUS-|pedido|factura|cliente)\b/i.test(content)) {
+    return 'STATUS';
+  }
+  if (/\b(c[oó]mo|policy|pol[ií]tica|procedimiento|sop|gu[ií]a)\b/i.test(content)) {
+    return 'SOP';
+  }
+  return 'OTHER';
+};
+
+const mockSopResponse = (): string =>
+  [
+    'Resumen: Procedimiento orientativo generado en modo mock; validá contra fuentes listadas.',
+    '',
+    'Pasos:',
+    '1. Confirmar alcance del caso y rol autorizado.',
+    '2. Revisar política/SOP vigente con citaciones.',
+    '3. Ejecutar validaciones y registrar trazabilidad.',
+    '',
+    'Notas / riesgos / excepciones:',
+    '- No inventar datos no respaldados.',
+    '- Si falta evidencia, declarar falta de certeza y pedir contexto mínimo.',
+  ].join('\n');
+
 export class OpenAICompatibleClient implements LLMClient {
   constructor(
     private readonly baseUrl = env.LLM_BASE_URL,
@@ -45,6 +87,10 @@ export class OpenAICompatibleClient implements LLMClient {
   ) {}
 
   async embed(input: string[]): Promise<number[][]> {
+    if (isMockMode(this.baseUrl)) {
+      return input.map((item) => mockEmbedding(item));
+    }
+
     const response = await fetch(`${this.baseUrl}${env.LLM_EMBED_PATH}`, {
       method: 'POST',
       headers: authHeaders(),
@@ -63,6 +109,23 @@ export class OpenAICompatibleClient implements LLMClient {
   }
 
   async chat(messages: ChatMessage[], options?: { maxTokens?: number; temperature?: number }): Promise<ChatResult> {
+    if (isMockMode(this.baseUrl)) {
+      const userText = messages[messages.length - 1]?.content ?? '';
+      const isIntentPrompt = messages.some(
+        (message) =>
+          message.role === 'system' && message.content.toLowerCase().includes('classify user intent'),
+      );
+      const text = isIntentPrompt ? mockClassification(userText) : mockSopResponse();
+      return {
+        text,
+        usage: {
+          promptTokens: Math.max(1, Math.round(userText.length / 4)),
+          completionTokens: Math.max(1, Math.round(text.length / 5)),
+          totalTokens: Math.max(2, Math.round(userText.length / 4) + Math.round(text.length / 5)),
+        },
+      };
+    }
+
     const response = await fetch(`${this.baseUrl}${env.LLM_CHAT_PATH}`, {
       method: 'POST',
       headers: authHeaders(),
@@ -90,4 +153,3 @@ export class OpenAICompatibleClient implements LLMClient {
     };
   }
 }
-

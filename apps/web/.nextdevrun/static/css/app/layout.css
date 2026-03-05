@@ -1,0 +1,92 @@
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ../../node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[12].use[2]!../../node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[12].use[3]!./app/globals.css ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+:root {
+  --font-heading: "Trebuchet MS", "Gill Sans", "Avenir Next", sans-serif;
+  --font-mono: "Cascadia Mono", "IBM Plex Mono", "Consolas", monospace;
+  --bg-top: #f6efe4;
+  --bg-bottom: #f8fbff;
+  --surface: #ffffff;
+  --surface-alt: #f3f7fb;
+  --ink: #1f2a37;
+  --ink-soft: #4f6173;
+  --accent: #1f7a8c;
+  --accent-strong: #0f4c5c;
+  --warn: #b75d2a;
+  --good: #1b7f4f;
+  --border: #d7e2eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--font-heading), sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 12% 10%, rgba(31, 122, 140, 0.18), transparent 40%),
+    radial-gradient(circle at 88% 4%, rgba(219, 119, 50, 0.14), transparent 42%),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+}
+
+.font-shell {
+  font-family: var(--font-heading);
+}
+
+a {
+  color: var(--accent-strong);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(20, 30, 40, 0.06);
+}
+
+.mono {
+  font-family: var(--font-mono), monospace;
+}
+
+.chat-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  grid-gap: 14px;
+  gap: 14px;
+}
+
+@media (max-width: 900px) {
+  .shell {
+    padding: 12px;
+  }
+
+  .chat-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .chat-sidebar {
+    max-height: 220px !important;
+  }
+
+  .chat-panel {
+    min-height: 62vh !important;
+  }
+}
+

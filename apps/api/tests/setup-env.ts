@@ -1,0 +1,12 @@
+process.env.NODE_ENV = 'test';
+process.env.PORT = '4000';
+process.env.DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/copiloto';
+process.env.LLM_BASE_URL = process.env.LLM_BASE_URL ?? 'https://example.com';
+process.env.LLM_API_KEY = process.env.LLM_API_KEY ?? 'test-key';
+process.env.LLM_CHAT_MODEL = process.env.LLM_CHAT_MODEL ?? 'gpt-test';
+process.env.LLM_EMBED_MODEL = process.env.LLM_EMBED_MODEL ?? 'text-embedding-test';
+process.env.AUTH_JWT_SECRET = process.env.AUTH_JWT_SECRET ?? 'very-long-test-secret-value';
+process.env.APP_ALLOWED_ROLES = process.env.APP_ALLOWED_ROLES ?? 'finance,sales,support,admin';
+process.env.RATE_LIMIT_WINDOW_MS = process.env.RATE_LIMIT_WINDOW_MS ?? '60000';
+process.env.RATE_LIMIT_MAX_REQUESTS = process.env.RATE_LIMIT_MAX_REQUESTS ?? '100';
+process.env.API_CORS_ORIGIN = process.env.API_CORS_ORIGIN ?? 'http://localhost:3000';

@@ -12,7 +12,7 @@ import {
 
 const vector = customType<{ data: number[]; driverData: string; config: { dimensions: number } }>({
   dataType(config) {
-    return `vector(${config.dimensions})`;
+    return `vector(${config?.dimensions ?? 1536})`;
   },
   toDriver(value) {
     return `[${value.join(',')}]`;
@@ -119,4 +119,3 @@ export const toolTraces = pgTable('tool_traces', {
   sanitizedOutput: jsonb('sanitized_output').$type<Record<string, unknown>>().notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
-

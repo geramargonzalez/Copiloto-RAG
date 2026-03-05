@@ -24,6 +24,19 @@ type PipelineInput = {
   };
   llm: LLMClient;
   statusProvider: StatusProvider;
+  store?: ChatStore;
+};
+
+export type ChatStore = {
+  ensureConversation: typeof ensureConversation;
+  appendMessage: typeof appendMessage;
+  saveToolTrace: typeof saveToolTrace;
+};
+
+const defaultStore: ChatStore = {
+  ensureConversation,
+  appendMessage,
+  saveToolTrace,
 };
 
 const shouldAttachPolicyContext = (message: string): boolean =>
@@ -39,24 +52,25 @@ const toToolCitations = (traces: Awaited<ReturnType<typeof executeStatusTools>>[
 
 export const runChatPipeline = async (input: PipelineInput): Promise<ChatResponse> => {
   const startedAt = Date.now();
-  const conversationId = await ensureConversation({
+  const store = input.store ?? defaultStore;
+  const conversationId = await store.ensureConversation({
     conversationId: input.conversationId,
     userId: input.auth.userId,
     userRole: input.auth.role,
   });
 
   if (userAskedForPII(input.message)) {
-    await appendMessage({
+    await store.appendMessage({
       conversationId,
       userId: input.auth.userId,
       role: 'user',
       intent: 'OTHER',
-      content: input.message,
+      content: redactPII(input.message, { extraPatterns: env.PII_BLOCKLIST_PATTERNS_LIST }),
       citations: [],
       metrics: {},
     });
     const answer = piiRefusalReply();
-    const assistantId = await appendMessage({
+    const assistantId = await store.appendMessage({
       conversationId,
       userId: input.auth.userId,
       role: 'assistant',
@@ -83,7 +97,7 @@ export const runChatPipeline = async (input: PipelineInput): Promise<ChatRespons
     };
   }
 
-  await appendMessage({
+  await store.appendMessage({
     conversationId,
     userId: input.auth.userId,
     role: 'user',
@@ -164,7 +178,7 @@ export const runChatPipeline = async (input: PipelineInput): Promise<ChatRespons
 
   const cleanAnswer = redactPII(answer, { extraPatterns: env.PII_BLOCKLIST_PATTERNS_LIST });
   const estimatedCostUsd = estimateCost(promptTokens, completionTokens);
-  const messageId = await appendMessage({
+  const messageId = await store.appendMessage({
     conversationId,
     userId: input.auth.userId,
     role: 'assistant',
@@ -180,7 +194,7 @@ export const runChatPipeline = async (input: PipelineInput): Promise<ChatRespons
   });
 
   for (const trace of toolTraces) {
-    await saveToolTrace({
+    await store.saveToolTrace({
       conversationId,
       messageId,
       requestId: trace.requestId,
@@ -212,4 +226,3 @@ export const runChatPipeline = async (input: PipelineInput): Promise<ChatRespons
     },
   };
 };
-

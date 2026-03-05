@@ -14,8 +14,9 @@ export const ensureConversation = async (params: {
       .from(conversations)
       .where(and(eq(conversations.id, params.conversationId), eq(conversations.userId, params.userId)))
       .limit(1);
-    if (existing.length === 1) {
-      return existing[0].id;
+    const first = existing[0];
+    if (first) {
+      return first.id;
     }
   }
 
@@ -26,6 +27,9 @@ export const ensureConversation = async (params: {
       userRole: params.userRole,
     })
     .returning({ id: conversations.id });
+  if (!created) {
+    throw new Error('Unable to create conversation');
+  }
 
   return created.id;
 };
@@ -51,6 +55,9 @@ export const appendMessage = async (params: {
       metrics: params.metrics,
     })
     .returning({ id: messages.id });
+  if (!created) {
+    throw new Error('Unable to append message');
+  }
 
   await db
     .update(conversations)
@@ -124,4 +131,3 @@ export const listMessages = async (conversationId: string, userId: string) =>
     .innerJoin(conversations, eq(conversations.id, messages.conversationId))
     .where(and(eq(messages.conversationId, conversationId), eq(conversations.userId, userId)))
     .orderBy(asc(messages.createdAt));
-

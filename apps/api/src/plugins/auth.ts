@@ -5,6 +5,13 @@ import { parseAuth } from '../auth/token.js';
 
 export const authPlugin = fp(async (app) => {
   app.addHook('preHandler', async (request, reply) => {
+    const publicRoutes = ['/health', '/metrics'];
+    const requestPath = request.url.split('?')[0] ?? request.url;
+    if (publicRoutes.includes(requestPath)) {
+      request.auth = { userId: 'public', role: 'support' };
+      return;
+    }
+
     try {
       const auth = await parseAuth(request.headers as Record<string, unknown>);
 
@@ -19,4 +26,3 @@ export const authPlugin = fp(async (app) => {
     }
   });
 });
-

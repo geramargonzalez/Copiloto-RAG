@@ -2,10 +2,10 @@ node_modules
 .pnpm-store
 .turbo
 .next
+.nextbuild
 dist
 coverage
 .env
 .env.local
 apps/api/drizzle/meta
 eval/reports/*.md
-

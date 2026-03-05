@@ -1,0 +1,11 @@
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3100
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.5s
+ ○ Compiling / ...
+ ✓ Compiled / in 6.4s (868 modules)
+ HEAD / 307 in 100ms
+ HEAD / 307 in 30ms
+^C
