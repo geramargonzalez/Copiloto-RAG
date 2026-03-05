@@ -1,0 +1,28 @@
+{
+  "name": "copiloto-rag",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.6.0",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "ingest": "pnpm --filter @copiloto/api ingest",
+    "db:migrate": "pnpm --filter @copiloto/api db:migrate",
+    "db:generate": "pnpm --filter @copiloto/api db:generate",
+    "eval": "pnpm --filter @copiloto/api eval:run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "@typescript-eslint/eslint-plugin": "^8.22.0",
+    "@typescript-eslint/parser": "^8.22.0",
+    "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
+    "prettier": "^3.5.3",
+    "turbo": "^2.4.4",
+    "typescript": "^5.7.3"
+  }
+}
+
